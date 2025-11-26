@@ -1,4 +1,4 @@
-chmod +x build.sh
-git add build.sh
-git commit -m "Make build.sh executable"
-git push
+#!/usr/bin/env bash
+set -o errexit
+python manage.py collectstatic --no-input
+python manage.py migrate
