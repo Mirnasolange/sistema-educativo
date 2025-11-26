@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Web Scraper Educativo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="mb-0"><i class="bi bi-search"></i> Web Scraper Educativo</h2>
+                <p class="text-muted mb-0">Busca información educativa en Wikipedia</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-input-cursor-text"></i> Búsqueda</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="palabra_clave" class="form-label">Palabra Clave</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="palabra_clave" 
+                               name="palabra_clave" 
+                               value="{{ palabra_clave }}"
+                               placeholder="Ej: Python, Matemáticas, Historia"
+                               required>
+                        <small class="form-text text-muted">
+                            Ingresa un tema para buscar en Wikipedia
+                        </small>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               id="enviar_email" 
+                               name="enviar_email">
+                        <label class="form-check-label" for="enviar_email">
+                            <i class="bi bi-envelope"></i> Enviar resultados por email
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Buscar Información
+                    </button>
+                </form>
+
+                <hr>
+
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle"></i> 
+                    <strong>Información:</strong><br>
+                    Este scraper busca contenido educativo en Wikipedia. Los resultados incluyen artículos y enlaces relacionados.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-list-ul"></i> Resultados
+                    {% if resultados %}
+                        <span class="badge bg-primary">{{ resultados|length }}</span>
+                    {% endif %}
+                </h5>
+
+                {% if resultados %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th style="width: 25%">Título</th>
+                                    <th style="width: 50%">Contenido</th>
+                                    <th style="width: 20%">Fuente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for resultado in resultados %}
+                                <tr>
+                                    <td>{{ resultado.numero }}</td>
+                                    <td><strong>{{ resultado.titulo }}</strong></td>
+                                    <td>
+                                        <small>{{ resultado.contenido }}</small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ resultado.fuente }}" 
+                                           target="_blank" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-box-arrow-up-right"></i> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-search" style="font-size: 3rem; color: #ccc;"></i>
+                        <p class="text-muted mt-3">
+                            {% if palabra_clave %}
+                                No se encontraron resultados. Intenta con otra búsqueda.
+                            {% else %}
+                                Ingresa una palabra clave para comenzar la búsqueda.
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
