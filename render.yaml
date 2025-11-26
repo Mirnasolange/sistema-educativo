@@ -1,0 +1,28 @@
+databases:
+  - name: sistema_educativo_db
+    databaseName: sistema_educativo
+    user: sistema_educativo_user
+
+services:
+  - type: web
+    name: sistema-educativo
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sistema_educativo_db
+          property: connectionString
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
